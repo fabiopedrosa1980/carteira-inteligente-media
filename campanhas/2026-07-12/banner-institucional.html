@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Carteira Inteligente — banner institucional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Tokens: carteira-inteligente/src/styles.scss (:root = tema escuro, o padrão) */
+  :root {
+    --bg: #0d1117;
+    --card-bg: #161b22;
+    --border: #21262d;
+    --accent: #2ea043;
+    --text-primary: #e6edf3;
+    --text-secondary: #7d8590;
+    --color-pos: #68d391;
+    --btn-add-bg: #2f855a;
+    --class-acoes: #2ea043;
+    --class-fii: #22d3ee;
+    --class-etf: #b26bf6;
+    --gold: #c9a84c;
+    --radius-card: 12px;
+    --radius-chip: 10px;
+    --radius-pill: 999px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1672px; height: 941px;
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .stage {
+    position: relative; width: 100%; height: 100%;
+    display: grid; grid-template-columns: 47% 53%;
+    padding: 64px 72px;
+  }
+  /* Brilho verde discreto, no lugar do preto puro + neon do template antigo */
+  .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(900px 620px at 88% 44%, rgba(46,160,67,.14), transparent 62%),
+      radial-gradient(560px 420px at 6% 8%, rgba(201,168,76,.06), transparent 64%);
+  }
+
+  /* ── Coluna esquerda ─────────────────────────────────────────── */
+  .left { position: relative; display: flex; flex-direction: column; padding-right: 56px; justify-content: center; }
+
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand svg { width: 44px; height: 44px; display: block; }
+  .wordmark {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 25px; letter-spacing: -.01em; line-height: 1;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-weight: 400;
+    font-size: 14px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--text-secondary); margin-top: 72px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 60px; line-height: 1.08; letter-spacing: -.02em;
+    margin-top: 20px;
+  }
+  h1 .hl { color: var(--color-pos); }
+
+  .sub {
+    font-size: 20px; line-height: 1.55; color: var(--text-secondary);
+    margin-top: 22px; max-width: 30ch;
+  }
+  .sub strong { color: var(--text-primary); font-weight: 600; }
+
+  .feats { margin-top: 40px; display: flex; flex-direction: column; gap: 15px; }
+  .feat { display: flex; gap: 13px; align-items: baseline; }
+  .feat .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; transform: translateY(-2px); }
+  .feat b { font-weight: 600; font-size: 17px; }
+  .feat span { color: var(--text-secondary); font-size: 17px; }
+
+  .cta-row { margin-top: 54px; display: flex; align-items: center; gap: 18px; }
+  /* Texto escuro sobre branco: 18,9:1. O kit proíbe branco sobre o verde de acento. */
+  .cta {
+    display: inline-flex; align-items: center; gap: 11px;
+    background: #fff; color: #0d1117;
+    font-weight: 600; font-size: 18px;
+    padding: 15px 26px; border-radius: var(--radius-pill);
+  }
+  .cta svg { width: 20px; height: 20px; }
+  .cta-note {
+    font-family: 'DM Mono', monospace; font-size: 14px;
+    color: var(--text-secondary); line-height: 1.4;
+  }
+
+  /* ── Coluna direita: card de produto ─────────────────────────── */
+  .right { position: relative; display: flex; align-items: center; }
+  .card {
+    width: 100%; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: var(--radius-card);
+    padding: 30px 32px 26px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+  }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .card-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; }
+  .card-sub { font-size: 14px; color: var(--text-secondary); margin-top: 5px; }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: var(--radius-chip);
+    padding: 6px 10px; white-space: nowrap;
+  }
+
+  /* Gráfico de proventos por mês */
+  .chart { margin-top: 26px; display: flex; align-items: flex-end; gap: 14px; height: 190px; }
+  .bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 9px; height: 100%; justify-content: flex-end; }
+  .bar .val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-secondary); }
+  .bar .fill { width: 100%; border-radius: 6px 6px 3px 3px; background: var(--accent); }
+  .bar.on .fill { background: var(--color-pos); }
+  .bar.on .val { color: var(--color-pos); font-weight: 500; }
+  .bar .mo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-secondary); text-transform: uppercase; }
+
+  .rule { height: 1px; background: var(--border); margin: 26px 0 22px; }
+
+  /* Alocação por classe — as três cores de classe do design system */
+  .alloc-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .alloc-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px; }
+  .alloc-meta { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-secondary); }
+  .track { display: flex; gap: 4px; height: 13px; margin-top: 14px; }
+  .track i { display: block; border-radius: 3px; }
+  .legend { display: flex; gap: 26px; margin-top: 15px; }
+  .lg { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+  .lg i { width: 9px; height: 9px; border-radius: 2px; display: block; }
+  .lg b { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text-primary); }
+
+  /* ── Rodapé ──────────────────────────────────────────────────── */
+  .foot {
+    position: absolute; left: 72px; right: 72px; bottom: 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-secondary);
+  }
+  .foot .url { color: var(--text-primary); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="glow"></div>
+
+  <div class="left">
+    <div class="brand">
+      <!-- favicon.svg do site, sem alteração de cor -->
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="10" fill="#06090F"/>
+        <rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/>
+        <rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/>
+        <rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/>
+        <path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+        <circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/>
+      </svg>
+      <div class="wordmark">Carteira Inteligente</div>
+    </div>
+
+    <div class="eyebrow">Carteira da B3 · sem planilha</div>
+    <h1>Importe o extrato<br />da B3. O resto<br /><span class="hl">a gente monta.</span></h1>
+    <p class="sub">Entra com o Google, importa o extrato e pronto. <strong>Sem digitar operação uma a uma</strong> e sem Open Finance.</p>
+
+    <div class="feats">
+      <div class="feat"><span class="dot"></span><div><b>Radar de proventos</b> <span>— quanto cai, e em que mês</span></div></div>
+      <div class="feat"><span class="dot"></span><div><b>Alocação por classe</b> <span>— o desvio da sua meta</span></div></div>
+      <div class="feat"><span class="dot"></span><div><b>Preço-teto</b> <span>— o teto é seu; o app avisa quando o preço passa</span></div></div>
+      <div class="feat"><span class="dot"></span><div><b>Datas com direito</b> <span>— pra não perder o corte</span></div></div>
+    </div>
+
+    <div class="cta-row">
+      <div class="cta">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.2-2.2H12v4h6.6c-.1 1.1-.9 2.8-2.5 3.9l3.8 3c2.3-2.1 3.6-5.2 3.6-8.7z"/>
+          <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.8-3c-1 .7-2.4 1.2-4.2 1.2-3.2 0-5.9-2.1-6.9-5l-3.9 3C3.2 21.3 7.3 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.1 14.3c-.3-.8-.4-1.5-.4-2.3s.2-1.6.4-2.3l-4-3.1C.4 8.2 0 10 0 12s.4 3.8 1.1 5.4l4-3.1z"/>
+          <path fill="#EA4335" d="M12 4.8c2.3 0 3.8 1 4.7 1.8l3.4-3.3C18 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.1 6.6l4 3.1c1-2.9 3.7-4.9 6.9-4.9z"/>
+        </svg>
+        Entrar com o Google
+      </div>
+      <div class="cta-note">Gratuito.<br />Sem cartão.</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Radar de proventos</div>
+          <div class="card-sub">Quanto você tem a receber, mês a mês.</div>
+        </div>
+        <div class="tag">Carteira ilustrativa</div>
+      </div>
+
+      <div class="chart">
+        <div class="bar"><span class="val">R$ 214</span><span class="fill" style="height:34%"></span><span class="mo">jul</span></div>
+        <div class="bar"><span class="val">R$ 168</span><span class="fill" style="height:26%"></span><span class="mo">ago</span></div>
+        <div class="bar"><span class="val">R$ 305</span><span class="fill" style="height:49%"></span><span class="mo">set</span></div>
+        <div class="bar"><span class="val">R$ 262</span><span class="fill" style="height:42%"></span><span class="mo">out</span></div>
+        <div class="bar"><span class="val">R$ 348</span><span class="fill" style="height:56%"></span><span class="mo">nov</span></div>
+        <div class="bar on"><span class="val">R$ 597</span><span class="fill" style="height:95%"></span><span class="mo">dez</span></div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="alloc-head">
+        <div class="alloc-title">Alocação por classe</div>
+        <div class="alloc-meta">meta 60 / 30 / 10</div>
+      </div>
+      <div class="track">
+        <i style="background:var(--class-acoes); width:57%"></i>
+        <i style="background:var(--class-fii);   width:31%"></i>
+        <i style="background:var(--class-etf);   width:12%"></i>
+      </div>
+      <div class="legend">
+        <div class="lg"><i style="background:var(--class-acoes)"></i>Ações <b>57%</b></div>
+        <div class="lg"><i style="background:var(--class-fii)"></i>FIIs <b>31%</b></div>
+        <div class="lg"><i style="background:var(--class-etf)"></i>ETFs <b>12%</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="url">www.carteira-inteligente.com</div>
+    <div>Carteira ilustrativa · valores fictícios · não é recomendação de investimento</div>
+  </div>
+</div>
+</body>
+</html>
