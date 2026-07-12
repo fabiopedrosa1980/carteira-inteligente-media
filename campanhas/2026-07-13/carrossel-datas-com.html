@@ -88,14 +88,12 @@
   .row .v.pos { color: var(--color-pos); }
   .row .v.acc { color: var(--accent); }
 
-  .chip {
-    display: inline-flex; align-items: center; gap: 12px;
-    align-self: flex-start;
-    border: 1px solid var(--border); background: var(--card-bg);
-    border-radius: 999px; padding: 13px 22px; margin-top: 44px;
-    font-family: 'DM Mono', monospace; font-size: 22px; color: var(--text-secondary);
+  .nota {
+    margin-top: 34px; font-size: 25px; line-height: 1.5;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--border); padding-left: 20px;
   }
-  .chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); display: block; }
+  .nota strong { color: var(--text-primary); font-weight: 600; }
 
   /* CTA final */
   .cta {
@@ -170,9 +168,10 @@
     <div class="empresa">Banco Pine</div>
     <div class="rows">
       <div class="row"><span class="k">Provento</span><span class="v">JCP</span></div>
-      <div class="row"><span class="k">Valor por ação</span><span class="v pos">R$ 0,27</span></div>
+      <div class="row"><span class="k">Valor bruto por ação</span><span class="v pos">R$ 0,2714290</span></div>
       <div class="row"><span class="k">Pagamento</span><span class="v acc">22/07</span></div>
     </div>
+    <div class="nota">JCP não é dividendo: tem <strong>imposto de renda retido na fonte</strong>. O valor acima é bruto, e o que cai na conta é menor.</div>
   </div>
   <div class="foot">
     <div class="url">www.carteira-inteligente.com</div>
@@ -196,6 +195,7 @@
       <div class="row"><span class="k">Valor por unit</span><span class="v pos">R$ 0,17</span></div>
       <div class="row"><span class="k">Pagamento</span><span class="v acc">29/07</span></div>
     </div>
+    <div class="nota">É a <strong>3ª parcela</strong> dos R$ 200 milhões que a Iguatemi aprovou para pagar ao longo de 2026, divididos em quatro parcelas.</div>
   </div>
   <div class="foot">
     <div class="url">www.carteira-inteligente.com</div>
@@ -216,9 +216,10 @@
     <div class="empresa">Mitre Realty</div>
     <div class="rows">
       <div class="row"><span class="k">Provento</span><span class="v">Dividendo</span></div>
-      <div class="row"><span class="k">Valor por ação</span><span class="v pos">R$ 0,03</span></div>
+      <div class="row"><span class="k">Valor por ação</span><span class="v pos">R$ 0,028</span></div>
       <div class="row"><span class="k">Pagamento</span><span class="v acc">24/07</span></div>
     </div>
+    <div class="nota">É a <strong>1ª de 3 parcelas</strong>. As outras caem em 21/08 e 18/09, cada uma com a sua própria data-com.</div>
   </div>
   <div class="foot">
     <div class="url">www.carteira-inteligente.com</div>
