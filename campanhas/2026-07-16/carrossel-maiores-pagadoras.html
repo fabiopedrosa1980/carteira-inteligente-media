@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Carrossel — maiores pagadoras de dividendos 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Tokens do design system: carteira-inteligente/src/styles.scss (:root = escuro) */
+  :root {
+    --bg: #0d1117;
+    --card-bg: #161b22;
+    --border: #21262d;
+    --accent: #2ea043;
+    --text-primary: #e6edf3;
+    --text-secondary: #7d8590;
+    --color-pos: #68d391;
+    --color-neg: #fc8181;
+    --gold: #c9a84c;
+
+    /* Trilhos fixos. Toda coluna nasce daqui, então nada dança de um
+       slide para o outro nem de uma linha para a outra. */
+    --col-pos: 52px;   /* posição no ranking */
+    --col-tick: 132px; /* ticker (cabe JBSS32, o mais largo) */
+    --col-val: 190px;  /* valor */
+    --col-var: 96px;   /* variação */
+    --gap: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; font-family: 'Inter', sans-serif; }
+
+  .slide {
+    position: relative;
+    width: 1080px; height: 1350px;
+    background: var(--bg);
+    color: var(--text-primary);
+    padding: 84px 80px 76px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: left;              /* uma direção só, em todo slide */
+    -webkit-font-smoothing: antialiased;
+  }
+  body.show-1 #s1, body.show-2 #s2, body.show-3 #s3,
+  body.show-4 #s4, body.show-5 #s5 { display: flex; }
+
+  .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(760px 620px at 82% 78%, rgba(46,160,67,.13), transparent 64%);
+  }
+
+  /* Marca: mesma altura nos 5 slides */
+  .brand { position: relative; display: flex; align-items: center; gap: 16px; }
+  .brand svg { width: 48px; height: 48px; }
+  .wm {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 25px; letter-spacing: .01em; color: var(--text-primary);
+  }
+
+  /* Corpo sempre ancorado no topo: o título nasce no mesmo Y em todo slide */
+  .body { position: relative; flex: 1; display: flex; flex-direction: column; padding-top: 52px; }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 23px; font-weight: 400;
+    text-transform: uppercase; letter-spacing: .16em;
+    color: var(--text-secondary);
+    height: 30px;                  /* reservado mesmo quando vazio, para o título não subir */
+    margin-bottom: 22px;
+  }
+  .eyebrow.pos { color: var(--color-pos); }
+
+  h1, h2 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    letter-spacing: -.018em;
+  }
+  h1 { font-size: 76px; line-height: 1.12; }
+  h2 { font-size: 50px; line-height: 1.18; }
+  .kicker {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 46px; line-height: 1.2; color: var(--color-pos); margin-top: 26px;
+  }
+  .lead { font-size: 29px; line-height: 1.5; color: var(--text-secondary); margin-top: 28px; }
+  .lead strong { color: var(--text-primary); font-weight: 600; }
+  .g { color: var(--color-pos); }
+
+  /* ——— A barra é a régua ———
+     Barras de um slide compartilham a escala. Barra de R$ é sólida;
+     barra de % é vazada, porque real e porcentagem não se comparam. */
+  .rank { margin-top: 28px; }
+  .r {
+    display: grid;
+    grid-template-columns: var(--col-pos) var(--col-tick) 1fr var(--col-val) var(--col-var);
+    align-items: baseline;
+    column-gap: var(--gap);
+    padding: 12px 0 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .r > * { text-align: left; }     /* nenhuma célula puxa para a direita */
+  .r .pos { font-family: 'DM Mono', monospace; font-size: 23px; color: var(--text-secondary); }
+  .r .tick {
+    font-family: 'DM Mono', monospace; font-size: 29px; font-weight: 500;
+    color: var(--text-primary);
+  }
+  .r .co {
+    font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 400;
+    color: var(--text-secondary);
+  }
+  .r .val {
+    font-family: 'DM Mono', monospace; font-size: 29px; font-weight: 500;
+    color: var(--text-primary); white-space: nowrap;
+  }
+  .r .var { font-family: 'DM Mono', monospace; font-size: 20px; white-space: nowrap; }
+  .var.up { color: var(--color-pos); }
+  .var.down { color: var(--color-neg); }
+
+  /* a barra corre do ticker até a borda da última coluna */
+  .bar { grid-column: 2 / 6; height: 7px; margin-top: 9px; background: var(--border); border-radius: 4px; }
+  .bar > i { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+  .bar.pct { background: transparent; border: 1px solid var(--border); height: 9px; }
+  .bar.pct > i {
+    background: repeating-linear-gradient(-45deg, var(--text-secondary) 0 2px, transparent 2px 7px);
+    border-radius: 0;
+  }
+  .r.mark .tick { color: var(--color-pos); }
+
+  /* Slide das réguas: mesmos trilhos, sem coluna de variação */
+  .rulers { display: flex; flex-direction: column; gap: 30px; margin-top: 32px; }
+  .ruler { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px 34px 26px; }
+  .ruler h3 {
+    font-family: 'DM Mono', monospace; font-size: 21px; font-weight: 400;
+    text-transform: uppercase; letter-spacing: .12em; color: var(--text-secondary);
+  }
+  .ruler .how { font-size: 24px; color: var(--text-secondary); margin: 8px 0 16px; line-height: 1.45; }
+  .ruler .how strong { color: var(--text-primary); font-weight: 600; }
+  .ruler .r { border-bottom: none; padding: 11px 0 7px; }
+  .ruler .bar { grid-column: 2 / 6; }
+  .crown { color: var(--gold) !important; }
+
+  .nota {
+    margin-top: 26px; font-size: 24px; line-height: 1.5;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--border); padding-left: 20px;
+  }
+  .nota strong { color: var(--text-primary); font-weight: 600; }
+
+  /* CTA */
+  .cta {
+    display: inline-flex; align-items: center; gap: 14px; align-self: flex-start;
+    background: #fff; color: #0d1117; font-weight: 600; font-size: 30px;
+    padding: 22px 36px; border-radius: 999px; margin-top: 44px;
+  }
+  .cta svg { width: 30px; height: 30px; }
+  .cta-note {
+    font-family: 'DM Mono', monospace; font-size: 23px;
+    color: var(--text-secondary); margin-top: 22px;
+  }
+
+  /* Rodapé: uma coluna, à esquerda, colada na mesma base nos 5 slides */
+  .foot {
+    position: relative;
+    font-family: 'DM Mono', monospace; font-size: 18px; line-height: 1.6;
+    color: var(--text-secondary);
+    text-align: left; white-space: nowrap;   /* uma linha, sempre */
+  }
+  .foot .url { color: var(--text-primary); }
+  .foot .swipe { color: var(--color-pos); }
+</style>
+</head>
+<body>
+<script>
+  const n = new URLSearchParams(location.search).get('s') || '1';
+  document.addEventListener('DOMContentLoaded', () => document.body.classList.add('show-' + n));
+</script>
+
+<!-- Slide 1 — capa -->
+<section class="slide" id="s1">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+  <div class="body">
+    <div class="eyebrow">Maiores pagadoras · B3 · 2025</div>
+    <h1>Quem mais pagou<br />dividendos na B3<br />em 2025?</h1>
+    <div class="kicker">Depende de quem<br />você pergunta.</div>
+  </div>
+  <div class="foot"><span class="url">www.carteira-inteligente.com</span> · <span class="swipe">arrasta →</span></div>
+</section>
+
+<!-- Slide 2 — o top 10 -->
+<section class="slide" id="s2">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+  <div class="body">
+    <div class="eyebrow">Maiores pagadoras · B3 · 2025</div>
+    <h2>As 10 que mais<br />distribuíram caixa.</h2>
+    <div class="rank">
+      <div class="r">
+        <span class="pos">01</span><span class="tick">PETR4</span><span class="co">Petrobras</span>
+        <span class="val">R$ 60,79 bi</span><span class="var down">−41%</span>
+        <span class="bar"><i style="width:100%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">02</span><span class="tick">ITUB4</span><span class="co">Itaú</span>
+        <span class="val">R$ 55,15 bi</span><span class="var up">+98%</span>
+        <span class="bar"><i style="width:90.7%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">03</span><span class="tick">ITSA4</span><span class="co">Itaúsa</span>
+        <span class="val">R$ 21,69 bi</span><span class="var up">+71%</span>
+        <span class="bar"><i style="width:35.7%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">04</span><span class="tick">VALE3</span><span class="co">Vale</span>
+        <span class="val">R$ 20,68 bi</span><span class="var down">−6%</span>
+        <span class="bar"><i style="width:34.0%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">05</span><span class="tick">ABEV3</span><span class="co">Ambev</span>
+        <span class="val">R$ 19,95 bi</span><span class="var up">+417%</span>
+        <span class="bar"><i style="width:32.8%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">06</span><span class="tick">AXIA3</span><span class="co">Axia Energia</span>
+        <span class="val">R$ 12,63 bi</span><span class="var up">+851%</span>
+        <span class="bar"><i style="width:20.8%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">07</span><span class="tick">BBDC4</span><span class="co">Bradesco</span>
+        <span class="val">R$ 9,09 bi</span><span class="var up">+50%</span>
+        <span class="bar"><i style="width:15.0%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">08</span><span class="tick">JBSS32</span><span class="co">JBS</span>
+        <span class="val">R$ 8,87 bi</span><span class="var up">+100%</span>
+        <span class="bar"><i style="width:14.6%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">09</span><span class="tick">BBSE3</span><span class="co">BB Seguridade</span>
+        <span class="val">R$ 8,49 bi</span><span class="var up">+60%</span>
+        <span class="bar"><i style="width:14.0%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">10</span><span class="tick">RDOR3</span><span class="co">Rede D'Or</span>
+        <span class="val">R$ 7,64 bi</span><span class="var up">+416%</span>
+        <span class="bar"><i style="width:12.6%"></i></span>
+      </div>
+    </div>
+    <div class="nota">Variação contra 2024. Barras na mesma escala: a 10ª cabe <strong>oito vezes</strong> dentro da 1ª.</div>
+  </div>
+  <div class="foot">Meu Dividendo · dados de 2025 · consultado 12/07/2026 · não é recomendação</div>
+</section>
+
+<!-- Slide 3 — as duas réguas -->
+<section class="slide" id="s3">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+  <div class="body">
+    <div class="eyebrow">O pódio depende da régua</div>
+    <h2>Duas consultorias,<br />duas campeãs.</h2>
+    <div class="rulers">
+      <div class="ruler">
+        <h3>Régua 1 · Meu Dividendo</h3>
+        <p class="how">Conta o que a empresa <strong>declarou</strong> dentro do ano.</p>
+        <div class="r">
+          <span class="pos crown">1º</span><span class="tick">PETR4</span><span class="co">Petrobras</span>
+          <span class="val">R$ 60,79 bi</span><span class="var"></span>
+          <span class="bar"><i style="width:100%"></i></span>
+        </div>
+        <div class="r">
+          <span class="pos">2º</span><span class="tick">ITUB4</span><span class="co">Itaú</span>
+          <span class="val">R$ 55,15 bi</span><span class="var"></span>
+          <span class="bar"><i style="width:90.7%"></i></span>
+        </div>
+      </div>
+      <div class="ruler">
+        <h3>Régua 2 · Elos Ayta</h3>
+        <p class="how">Conta só o dinheiro que <strong>saiu do caixa</strong> dentro do ano.</p>
+        <div class="r">
+          <span class="pos crown">1º</span><span class="tick">ITUB4</span><span class="co">Itaú</span>
+          <span class="val">R$ 48,90 bi</span><span class="var"></span>
+          <span class="bar"><i style="width:100%"></i></span>
+        </div>
+        <div class="r">
+          <span class="pos">2º</span><span class="tick">PETR4</span><span class="co">Petrobras</span>
+          <span class="val">R$ 45,40 bi</span><span class="var"></span>
+          <span class="bar"><i style="width:92.8%"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="nota">Empresa declara dividendo num ano e paga no outro. Muda a régua, muda o pódio. <strong>As duas contas estão certas.</strong></div>
+  </div>
+  <div class="foot">Meu Dividendo e Elos Ayta · consultado 12/07/2026 · não é recomendação</div>
+</section>
+
+<!-- Slide 4 — o ranking de DY e a armadilha -->
+<section class="slide" id="s4">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+  <div class="body">
+    <div class="eyebrow">E por dividend yield?</div>
+    <h2>A lista é quase toda outra.</h2>
+    <div class="rank">
+      <div class="r">
+        <span class="pos">01</span><span class="tick">SYNE3</span><span class="co">Syn Prop</span>
+        <span class="val">54,87%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:100%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">02</span><span class="tick">VULC3</span><span class="co">Vulcabras</span>
+        <span class="val">30,94%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:56.4%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">03</span><span class="tick">LAVV3</span><span class="co">Lavvi</span>
+        <span class="val">27,57%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:50.2%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">04</span><span class="tick">UNIP6</span><span class="co">Unipar</span>
+        <span class="val">26,11%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:47.6%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">05</span><span class="tick">CYRE3</span><span class="co">Cyrela</span>
+        <span class="val">22,41%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:40.8%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">06</span><span class="tick">ALPA4</span><span class="co">Alpargatas</span>
+        <span class="val">21,39%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:39.0%"></i></span>
+      </div>
+      <div class="r mark">
+        <span class="pos">07</span><span class="tick">ITSA4</span><span class="co">Itaúsa</span>
+        <span class="val">19,91%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:36.3%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">08</span><span class="tick">BMOB3</span><span class="co">Bemobi</span>
+        <span class="val">19,45%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:35.4%"></i></span>
+      </div>
+      <div class="r mark">
+        <span class="pos">09</span><span class="tick">ITUB3</span><span class="co">Itaú</span>
+        <span class="val">18,69%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:34.1%"></i></span>
+      </div>
+      <div class="r">
+        <span class="pos">10</span><span class="tick">POMO4</span><span class="co">Marcopolo</span>
+        <span class="val">17,07%</span><span class="var"></span>
+        <span class="bar pct"><i style="width:31.1%"></i></span>
+      </div>
+    </div>
+    <div class="nota">Barra vazada porque é <strong>%, não R$</strong>. Em <span class="g">verde</span>, as duas únicas que também estão no top 10 em valor pago. DY é o dividendo <strong>dividido pelo preço</strong>: ação que cai faz o DY subir sem a empresa pagar um centavo a mais.</div>
+  </div>
+  <div class="foot">Elos Ayta/Forbes · base 15/12/2025 · consultado 12/07/2026 · não é recomendação</div>
+</section>
+
+<!-- Slide 5 — produto e CTA -->
+<section class="slide" id="s5">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+  <div class="body">
+    <div class="eyebrow pos">Radar de proventos</div>
+    <h2>Quanto a Petrobras<br />pagou não muda nada<br />na sua conta.</h2>
+    <p class="lead">O número que interessa é o seu. Importe o extrato da B3 e o radar mostra <strong>quanto você recebeu, de quem, e o que vem no mês que vem</strong>.</p>
+    <div class="cta">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.51h6.47a5.5 5.5 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.57-5.17 3.57-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.7 0 3.99 2.47 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></svg>
+      Entrar com o Google
+    </div>
+    <div class="cta-note">Gratuito. www.carteira-inteligente.com</div>
+  </div>
+  <div class="foot"><span class="url">www.carteira-inteligente.com</span> · não é recomendação</div>
+</section>
+</body>
+</html>
