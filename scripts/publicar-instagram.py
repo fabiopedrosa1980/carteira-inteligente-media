@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Publica um carrossel no Instagram pela Graph API oficial.
+Publica um carrossel ou uma imagem única no Instagram pela Graph API oficial.
 
 A API não faz upload de arquivo: ela busca cada imagem por URL pública. Os PNGs
 precisam estar acessíveis na internet antes de rodar isto (ver BASE_URL abaixo).
@@ -8,10 +8,19 @@ precisam estar acessíveis na internet antes de rodar isto (ver BASE_URL abaixo)
 Uso:
     export IG_USER_ID=...        # ID da conta Instagram Business/Creator
     export IG_ACCESS_TOKEN=...   # token com instagram_business_content_publish
-    export BASE_URL=https://...  # onde os slides estão hospedados
+    export BASE_URL=https://...  # onde as imagens estão hospedadas
+    export PREFIXO_SLIDES=...    # prefixo do nome dos PNGs na pasta da campanha
 
     python3 scripts/publicar-instagram.py posts/instagram/2026-07-13-instagram-datas-com-da-semana.md
     python3 scripts/publicar-instagram.py <post.md> --publicar   # posta de verdade
+
+O formato sai do nome dos arquivos na pasta da campanha, não de um parâmetro:
+    <prefixo>-slide-1.png, -slide-2.png, ...  -> carrossel
+    <prefixo>.png                             -> imagem única
+
+Os dois caminhos são diferentes na Graph API. O carrossel cria um container por
+slide com is_carousel_item, depois um container CAROUSEL que os amarra e carrega
+a legenda. A imagem única é um container só, já com a legenda dentro.
 
 Sem --publicar ele só simula: valida as credenciais, confere se cada imagem
 responde 200 e mostra a legenda que iria ao ar. Nada é postado.
@@ -72,15 +81,21 @@ def ler_status(caminho_post):
     return m.group(1) if m else "desconhecido"
 
 
-def urls_dos_slides(base_url, pasta_campanha, prefixo):
-    """Os slides na ordem em que aparecem no carrossel."""
-    slides = sorted(Path(pasta_campanha).glob(f"{prefixo}-slide-*.png"),
-                    key=lambda p: int(re.search(r"-slide-(\d+)", p.name).group(1)))
-    if not slides:
-        erro(f"nenhum slide encontrado em {pasta_campanha} com prefixo '{prefixo}'")
-    if len(slides) > 10:
-        erro(f"o Instagram aceita no máximo 10 imagens por carrossel; achei {len(slides)}")
-    return [(p.name, f"{base_url.rstrip('/')}/{p.name}") for p in slides]
+def urls_das_imagens(base_url, pasta_campanha, prefixo):
+    """As imagens do post, na ordem. Uma só imagem é um post estático."""
+    pasta = Path(pasta_campanha)
+    imagens = sorted(pasta.glob(f"{prefixo}-slide-*.png"),
+                     key=lambda p: int(re.search(r"-slide-(\d+)", p.name).group(1)))
+    if not imagens:
+        unica = pasta / f"{prefixo}.png"
+        if unica.exists():
+            imagens = [unica]
+    if not imagens:
+        erro(f"nenhuma imagem em {pasta_campanha} com prefixo '{prefixo}'. "
+             f"Esperava {prefixo}-slide-1.png (carrossel) ou {prefixo}.png (imagem única)")
+    if len(imagens) > 10:
+        erro(f"o Instagram aceita no máximo 10 imagens por carrossel; achei {len(imagens)}")
+    return [(p.name, f"{base_url.rstrip('/')}/{p.name}") for p in imagens]
 
 
 def conferir_publica(url):
@@ -134,12 +149,14 @@ def main():
 
     status = ler_status(post)
     legenda = ler_legenda(post)
-    slides = urls_dos_slides(base_url, pasta, prefixo)
+    imagens = urls_das_imagens(base_url, pasta, prefixo)
+    carrossel = len(imagens) > 1
 
     print(f"host      {API}")
     print(f"post      {post}")
     print(f"status    {status}")
-    print(f"slides    {len(slides)} (de {pasta})")
+    print(f"formato   {'carrossel' if carrossel else 'imagem única'}")
+    print(f"imagens   {len(imagens)} (de {pasta})")
     print(f"legenda   {len(legenda)} caracteres")
     print()
 
@@ -147,14 +164,14 @@ def main():
         erro(f"a legenda tem {len(legenda)} caracteres; o Instagram corta em 2200")
 
     # Toda imagem precisa estar de pé ANTES de falarmos com a Meta.
-    print("conferindo se cada slide está acessível publicamente...")
+    print("conferindo se cada imagem está acessível publicamente...")
     problema = False
-    for nome, url in slides:
+    for nome, url in imagens:
         ok, code = conferir_publica(url)
         print(f"  {'ok ' if ok else 'FALHA'} {code:>5}  {nome}")
         problema |= not ok
     if problema:
-        erro("algum slide não está público. A Meta busca a imagem pela URL; "
+        erro("alguma imagem não está pública. A Meta busca a imagem pela URL; "
              "se ela não responde 200, a publicação falha.")
 
     if not publicar:
@@ -167,28 +184,41 @@ def main():
     if status != "aprovado":
         erro(f"o post está como '{status}'. Só publico o que está 'aprovado'.")
 
-    print("\ncriando os containers de cada slide...")
-    filhos = []
-    for nome, url in slides:
-        r = chamar("POST", f"{ig_user}/media", {
-            "image_url": url,
-            "is_carousel_item": "true",
+    if carrossel:
+        print("\ncriando os containers de cada slide...")
+        filhos = []
+        for nome, url in imagens:
+            r = chamar("POST", f"{ig_user}/media", {
+                "image_url": url,
+                "is_carousel_item": "true",
+                "access_token": token,
+            })
+            filhos.append(r["id"])
+            print(f"  {nome} -> {r['id']}")
+
+        print("\nesperando o processamento...")
+        for cid in filhos:
+            esperar_container(cid, token)
+
+        print("criando o container do carrossel...")
+        pai = chamar("POST", f"{ig_user}/media", {
+            "media_type": "CAROUSEL",
+            "children": ",".join(filhos),
+            "caption": legenda,
             "access_token": token,
-        })
-        filhos.append(r["id"])
-        print(f"  {nome} -> {r['id']}")
+        })["id"]
+    else:
+        # Imagem única: um container só, e a legenda vai nele mesmo.
+        nome, url = imagens[0]
+        print("\ncriando o container da imagem...")
+        pai = chamar("POST", f"{ig_user}/media", {
+            "image_url": url,
+            "caption": legenda,
+            "access_token": token,
+        })["id"]
+        print(f"  {nome} -> {pai}")
 
-    print("\nesperando o processamento...")
-    for cid in filhos:
-        esperar_container(cid, token)
-
-    print("criando o container do carrossel...")
-    pai = chamar("POST", f"{ig_user}/media", {
-        "media_type": "CAROUSEL",
-        "children": ",".join(filhos),
-        "caption": legenda,
-        "access_token": token,
-    })["id"]
+    print("esperando o processamento...")
     esperar_container(pai, token)
 
     print("publicando...")
