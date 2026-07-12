@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Os 5 setores mais consistentes em dividendos — B3, 2021 a 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* Tokens do design system: carteira-inteligente/src/styles.scss (:root = escuro) */
+  :root {
+    --bg: #0d1117;
+    --card-bg: #161b22;
+    --border: #21262d;
+    --accent: #2ea043;
+    --text-primary: #e6edf3;
+    --text-secondary: #7d8590;
+    --color-pos: #68d391;
+    --warn: #f6ad55;
+    --gold: #c9a84c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; font-family: 'Inter', sans-serif; }
+
+  .slide {
+    position: relative;
+    width: 1080px; height: 1350px;
+    background: var(--bg);
+    color: var(--text-primary);
+    padding: 62px 80px 50px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(740px 600px at 84% 74%, rgba(46,160,67,.12), transparent 64%);
+  }
+
+  .brand { position: relative; display: flex; align-items: center; gap: 16px; }
+  .brand svg { width: 46px; height: 46px; }
+  .wm {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 24px; letter-spacing: .01em; color: var(--text-primary);
+  }
+
+  /* Centraliza o bloco no miolo do slide: sem isso o conteudo cola no topo
+     e sobra um vazio grande acima do rodape. */
+  .body {
+    position: relative; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 30px 0 20px;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 21px; font-weight: 400;
+    text-transform: uppercase; letter-spacing: .15em;
+    color: var(--text-secondary); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 56px; line-height: 1.1; letter-spacing: -.02em;
+  }
+  h1 em { font-style: normal; color: var(--color-pos); }
+  .lead { font-size: 24px; line-height: 1.45; color: var(--text-secondary); margin-top: 18px; }
+  .lead strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ——— Estrelas: é uma nota, então é dado — vai no verde, não no dourado. ——— */
+  .stars { margin-top: 20px; font-size: 34px; letter-spacing: 5px; line-height: 1; }
+  .stars b { color: var(--color-pos); font-weight: 400; }
+  .stars s { color: #39404a; text-decoration: none; }
+
+  /* ——— Capa: o ranking ——— */
+  .rank { margin-top: 40px; }
+  .r {
+    display: grid; grid-template-columns: 76px 1fr; align-items: center;
+    column-gap: 22px; padding: 21px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .r .pos {
+    font-family: 'DM Mono', monospace; font-size: 30px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .r.top .pos { color: var(--color-pos); }
+  .r .setor { font-size: 34px; font-weight: 600; color: var(--text-primary); }
+
+  /* ——— Blocos internos dos slides de setor ——— */
+  .card {
+    margin-top: 26px;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px;
+  }
+  .card .lbl {
+    font-family: 'DM Mono', monospace; font-size: 17px; text-transform: uppercase;
+    letter-spacing: .13em; color: var(--text-secondary); margin-bottom: 14px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 11px; }
+  .chips span {
+    font-size: 22px; font-weight: 500; color: var(--text-primary);
+    background: #1c2230; border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 18px;
+  }
+  /* Ticker e nome no mesmo chip: o ticker e' numero/rotulo, entao vai em DM Mono. */
+  .chips span b {
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    color: var(--color-pos); margin-right: 9px;
+  }
+  .chips span i { font-style: normal; color: var(--text-secondary); }
+  ul.tick { list-style: none; }
+  ul.tick li {
+    font-size: 24px; line-height: 1.5; color: var(--text-primary);
+    padding-left: 32px; position: relative; margin-bottom: 8px;
+  }
+  ul.tick li:last-child { margin-bottom: 0; }
+  ul.tick li::before {
+    content: ''; position: absolute; left: 4px; top: 14px;
+    width: 9px; height: 9px; border-radius: 50%; background: var(--color-pos);
+  }
+
+  .note { font-size: 24px; line-height: 1.5; color: var(--text-secondary); margin-top: 26px; }
+  .note strong { color: var(--text-primary); font-weight: 600; }
+  .note .warn { color: var(--warn); font-weight: 600; }
+
+  /* ——— Slide final: dois setores empilhados ——— */
+  .duo { margin-top: 30px; display: flex; flex-direction: column; gap: 22px; }
+  .duo .blk {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 26px 28px;
+  }
+  .duo .hd { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .duo .n {
+    font-family: 'DM Mono', monospace; font-size: 22px; color: var(--text-secondary);
+  }
+  .duo h2 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    font-size: 36px; line-height: 1.15; color: var(--text-primary);
+  }
+  .duo .stars { margin-top: 12px; font-size: 26px; letter-spacing: 4px; }
+  .duo p { font-size: 22px; line-height: 1.45; color: var(--text-secondary); margin-top: 12px; }
+  .duo .chips { margin-top: 16px; }
+  .duo .chips span { font-size: 20px; padding: 7px 16px; }
+
+  .prod {
+    margin-top: 34px;
+    font-size: 23px; line-height: 1.45; color: var(--text-secondary);
+  }
+  .prod strong { color: var(--text-primary); font-weight: 600; }
+  .prod .cta { color: var(--color-pos); font-weight: 600; }
+
+  .foot {
+    position: relative; margin-top: 14px;
+    font-family: 'DM Mono', monospace; font-size: 15px; line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .swipe {
+    position: absolute; right: 80px; bottom: 50px;
+    font-family: 'DM Mono', monospace; font-size: 18px; color: var(--color-pos);
+  }
+</style>
+</head>
+<body>
+
+<!-- ——————————————————— SLIDE 1 · capa ——————————————————— -->
+<section class="slide">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+
+  <div class="body">
+    <div class="eyebrow">Dividendos na B3 · 2021–2025</div>
+    <h1>Os 5 setores mais<br /><em>consistentes</em> em dividendos.</h1>
+    <p class="lead">Considerando a consistência de pagamento entre 2021 e 2025 — e <strong>não</strong> apenas um ano excepcional.</p>
+
+    <div class="rank">
+      <div class="r top">
+        <span class="pos">1º</span>
+        <span class="setor">Energia Elétrica</span>
+      </div>
+      <div class="r top">
+        <span class="pos">2º</span>
+        <span class="setor">Bancos / Financeiro</span>
+      </div>
+      <div class="r">
+        <span class="pos">3º</span>
+        <span class="setor">Petróleo, Gás e Combustíveis</span>
+      </div>
+      <div class="r">
+        <span class="pos">4º</span>
+        <span class="setor">Mineração e Siderurgia</span>
+      </div>
+      <div class="r">
+        <span class="pos">5º</span>
+        <span class="setor">Saneamento e Utilities</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Ranking e classificação: Bora Investir / B3, consultado em 12/07/2026.<br />Conteúdo informativo. Não é recomendação de compra ou venda.</div>
+  <div class="swipe">arrasta →</div>
+</section>
+
+<!-- ——————————————————— SLIDE 2 · energia ——————————————————— -->
+<section class="slide">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+
+  <div class="body">
+    <div class="eyebrow">1º lugar</div>
+    <h1>Energia Elétrica</h1>
+    <div class="stars"><b>★★★★★</b></div>
+    <p class="lead">O setor mais consistente para quem foca em <strong>renda</strong>. Dividendos previsíveis, fluxo de caixa estável e payout elevado.</p>
+
+    <div class="card">
+      <div class="lbl">Empresas do setor</div>
+      <div class="chips">
+        <span>Taesa</span><span>Engie Brasil</span><span>Copel</span>
+        <span>Alupar</span><span>ISA Energia Brasil</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="lbl">Vantagens</div>
+      <ul class="tick">
+        <li>Receita previsível</li>
+        <li>Baixa volatilidade</li>
+        <li>Dividendos frequentes</li>
+        <li>Excelente para renda passiva</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">Ranking e classificação: Bora Investir / B3, consultado em 12/07/2026.<br />Empresas citadas são exemplos do setor. Não é recomendação de compra ou venda.</div>
+  <div class="swipe">arrasta →</div>
+</section>
+
+<!-- ——————————————————— SLIDE 3 · bancos ——————————————————— -->
+<section class="slide">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+
+  <div class="body">
+    <div class="eyebrow">2º lugar</div>
+    <h1>Bancos / Financeiro</h1>
+    <div class="stars"><b>★★★★★</b></div>
+    <p class="lead">Historicamente um dos setores que <strong>mais distribuem</strong> dividendos. Lucros recorrentes e alta geração de caixa.</p>
+
+    <div class="card">
+      <div class="lbl">Empresas do setor</div>
+      <div class="chips">
+        <span>Banco do Brasil</span><span>Itaú Unibanco</span>
+        <span>Bradesco</span><span>Itaúsa</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="lbl">Características</div>
+      <ul class="tick">
+        <li>Lucros consistentes</li>
+        <li>Dividendos + JCP</li>
+        <li>Pagamentos ao longo do ano</li>
+      </ul>
+    </div>
+
+    <p class="note">O setor financeiro aparece entre os líderes de distribuição <strong>praticamente todos os anos</strong>.</p>
+  </div>
+
+  <div class="foot">Ranking e classificação: Bora Investir / B3, consultado em 12/07/2026.<br />Empresas citadas são exemplos do setor. Não é recomendação de compra ou venda.</div>
+  <div class="swipe">arrasta →</div>
+</section>
+
+<!-- ——————————————————— SLIDE 4 · petróleo ——————————————————— -->
+<section class="slide">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+
+  <div class="body">
+    <div class="eyebrow">3º lugar</div>
+    <h1>Petróleo, Gás<br />e Combustíveis</h1>
+    <div class="stars"><b>★★★</b><s>★★</s></div>
+    <p class="lead">O setor que proporcionou os <strong>maiores dividendos da história da B3</strong>. Destaque para a Petrobras.</p>
+
+    <div class="card">
+      <div class="lbl">Empresas do setor no Ibovespa</div>
+      <div class="chips">
+        <span><b>PETR4</b><i>Petrobras</i></span>
+        <span><b>PRIO3</b><i>Prio</i></span>
+        <span><b>VBBR3</b><i>Vibra</i></span>
+        <span><b>UGPA3</b><i>Ultrapar</i></span>
+        <span><b>RECV3</b><i>PetroRecôncavo</i></span>
+        <span><b>CSAN3</b><i>Cosan</i></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="lbl">O que aconteceu</div>
+      <ul class="tick">
+        <li>Centenas de bilhões distribuídos em 5 anos</li>
+        <li>Concentrado em 2022 e 2023</li>
+        <li>Puxado pelo preço alto do petróleo</li>
+      </ul>
+    </div>
+
+    <p class="note"><span class="warn">A ressalva:</span> os pagamentos são <strong>bastante cíclicos</strong>. Dividendo muito elevado, porém mais volátil — depende do preço do petróleo.</p>
+  </div>
+
+  <div class="foot">Ranking e classificação: Bora Investir / B3, consultado em 12/07/2026.<br />Empresas citadas são exemplos do setor. Não é recomendação de compra ou venda.</div>
+  <div class="swipe">arrasta →</div>
+</section>
+
+<!-- ——————————————————— SLIDE 5 · 4º, 5º e CTA ——————————————————— -->
+<section class="slide">
+  <div class="glow"></div>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" rx="10" fill="#06090F"/><rect x="9" y="30" width="7" height="11" rx="1.5" fill="#C9A84C" opacity="0.5"/><rect x="20.5" y="20" width="7" height="21" rx="1.5" fill="#C9A84C" opacity="0.75"/><rect x="32" y="9" width="7" height="32" rx="1.5" fill="#C9A84C"/><path d="M12 26 L24 17 L36 8" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="36" cy="8" r="2.6" fill="#C9A84C" opacity="0.85"/></svg>
+    <span class="wm">Carteira Inteligente</span>
+  </div>
+
+  <div class="body">
+    <div class="eyebrow">4º e 5º lugares</div>
+
+    <div class="duo">
+      <div class="blk">
+        <div class="hd">
+          <span class="n">4º</span>
+          <h2>Mineração e Siderurgia</h2>
+        </div>
+        <div class="stars"><b>★★★</b><s>★★</s></div>
+        <p>Forte geração de caixa nos ciclos favoráveis das commodities. Dependem do preço do minério de ferro e do aço — quando o ciclo vira, o dividendo vira junto.</p>
+        <div class="chips"><span>Vale</span><span>Gerdau Metalúrgica</span></div>
+      </div>
+
+      <div class="blk">
+        <div class="hd">
+          <span class="n">5º</span>
+          <h2>Saneamento e Utilities</h2>
+        </div>
+        <div class="stars"><b>★★★★</b><s>★</s></div>
+        <p>Negócios regulados, com receitas previsíveis. Isso favorece uma política consistente de distribuição e um bom histórico de remuneração ao acionista.</p>
+        <div class="chips"><span>Sanepar</span><span>Sabesp</span></div>
+      </div>
+    </div>
+
+    <p class="prod">Quanto os <strong>seus</strong> setores pagaram? Importe o extrato da B3 e o radar de proventos mostra, mês a mês. <span class="cta">Entrar com o Google.</span></p>
+  </div>
+
+  <div class="foot">Ranking e classificação: Bora Investir / B3, consultado em 12/07/2026.<br />Empresas citadas são exemplos do setor. Não é recomendação de compra ou venda.</div>
+</section>
+
+</body>
+</html>
