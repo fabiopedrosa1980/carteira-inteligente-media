@@ -15,7 +15,7 @@ Nesta semana caem três:
 
 PINE3 e PINE4, terça (14/07). JCP de R$ 0,2714290 por ação, pago em 22/07. Repare que é JCP, não dividendo: tem imposto de renda retido na fonte, então o valor que cai na conta é menor que o anunciado.
 
-IGTI11, quarta (15/07). Dividendo de R$ 0,17 por unit, pago em 29/07. É a terceira das quatro parcelas que a Iguatemi aprovou para 2026.
+IGTI11, quarta (15/07). Dividendo de cerca de R$ 0,17 por unit, pago em 29/07. É a terceira das quatro parcelas que a Iguatemi aprovou para 2026, e a empresa avisou que o valor por unit ainda pode sofrer pequenos ajustes.
 
 MTRE3, quarta (15/07). Dividendo de R$ 0,028 por ação, pago em 24/07. É a primeira de três parcelas, e as outras duas têm data-com própria em agosto e setembro.
 
@@ -86,6 +86,6 @@ Cada data-com foi conferida em duas fontes, e a checagem mudou dois números.
 
 **MTRE3** — data-com 15/07, ex a partir de 16/07, pagamento 24/07. São R$ 9 milhões em três parcelas de R$ 3 milhões: R$ 0,08508641283 por ação no total, ou R$ 0,028 por parcela. O R$ 0,03 da agenda do Investidor10 é arredondamento da primeira parcela e não deve ir ao ar como valor exato.
 
-**IGTI11** — data-com 15/07, pagamento 29/07, R$ 0,17 por unit. Terceira das quatro parcelas dos R$ 200 milhões aprovados para 2026. As datas batem em duas fontes; o valor por unit veio só do Investidor10.
+**IGTI11** — data-com 15/07, pagamento 29/07, cerca de R$ 0,17 por unit. Terceira das quatro parcelas dos R$ 200 milhões aprovados para 2026 (as outras datas-com são 19/02, 14/04 e 15/10). As quatro datas batem em duas fontes, mas o valor por unit não: ele vem só da agenda do Investidor10, e o comunicado da própria Iguatemi diz que "os valores por ação (ordinária, preferencial ou Unit) podem sofrer pequenos ajustes". Por isso o slide mostra "~ R$ 0,17" e não um número cravado.
 
 Antes de publicar, vale um último olhar no RI de cada empresa. Data de provento muda por deliberação do conselho, e o post carrega o número na imagem.
