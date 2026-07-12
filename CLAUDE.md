@@ -33,6 +33,10 @@ Dados de mercado vêm do Yahoo Finance. CTA padrão do site: **"Entrar com o Goo
 
 Instagram e LinkedIn pedem registros diferentes: no Instagram o texto é curto, quebrado em linhas, e o peso está no visual (carrossel/Reels); no LinkedIn cabe um texto mais longo e analítico, com o gancho nas duas primeiras linhas antes do corte do "ver mais".
 
+## Identidade visual
+
+A paleta, a tipografia e as regras de aplicação em arte estão no `BRAND.md`, extraídas do código do site (`../carteira-inteligente`, `src/styles.scss`) — não são escolhas deste repositório. Leia antes de escrever qualquer briefing de arte: o tema escuro é o padrão da marca, o fundo é `#0d1117` (não preto puro), o logo é dourado e não verde, e o verde de acento não é cor de botão.
+
 ## Tom de voz
 
 Direto, coloquial e descontraído — o site brinca com o "café esfriar" enquanto o investidor atualiza planilha. A promessa é **praticidade**, não sofisticação financeira.
