@@ -1,8 +1,9 @@
 ---
 canal: instagram
 formato: carrossel
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-16
+instagram_media_id: "18105950108102241"
 ---
 
 Quem mais pagou dividendos na B3 em 2025? Depende de quem você pergunta.
