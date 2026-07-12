@@ -71,6 +71,16 @@ Cada arquivo abre com frontmatter declarando `canal`, `formato` (carrossel, reel
 
 Escreva a legenda como ela será publicada: sem marcadores de edição, sem colchetes de placeholder. Se faltar uma informação, pergunte em vez de deixar `[preencher]` no texto.
 
+## Publicação no Instagram
+
+As credenciais **sempre** vêm de `~/.carteira-ig.env`, nunca de variáveis já exportadas na sessão nem de valores digitados na conversa. Carregue com `set -a; source ~/.carteira-ig.env; set +a` antes de rodar `scripts/publicar-instagram.py`. O arquivo mora fora do repositório de propósito: token de publicação não entra em commit.
+
+Uma ressalva sobre o `BASE_URL` que vem de lá: ele aponta para a pasta de uma campanha específica e envelhece a cada post. **Sobrescreva-o** com a pasta da campanha do dia antes de publicar, senão a Meta busca a arte de outra data. O mesmo vale para `PREFIXO_SLIDES`, que é o prefixo dos PNGs daquela campanha.
+
+A Graph API não faz upload de arquivo: ela busca cada imagem por URL pública. Então a arte precisa estar na `main` **antes** da publicação, servida pelo `raw.githubusercontent.com`. Push primeiro, publica depois.
+
+O script decide o formato pelo nome dos arquivos, não por parâmetro: `<prefixo>-slide-N.png` é carrossel, `<prefixo>.png` é imagem única. Sem `--publicar` ele apenas simula, e só publica o que estiver com `status: aprovado`.
+
 ## A confirmar com o Fábio
 
 Estes pontos foram inferidos do site, não informados: o handle exato do LinkedIn, se há outros canais além de Instagram e LinkedIn, e se a convenção de pastas acima corresponde a algum fluxo já existente (ferramenta de agendamento, planilha editorial). Ajuste este arquivo assim que forem definidos.

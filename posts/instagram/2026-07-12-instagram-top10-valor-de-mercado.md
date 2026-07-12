@@ -1,8 +1,9 @@
 ---
 canal: instagram
 formato: estatico
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-12
+instagram_media_id: "18148799155505189"
 ---
 
 A B3 tem 343 empresas listadas. Dez delas valem mais que as outras 333 somadas.
