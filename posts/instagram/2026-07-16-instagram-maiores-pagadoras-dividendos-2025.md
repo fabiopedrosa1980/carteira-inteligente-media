@@ -11,27 +11,21 @@ Duas consultorias olharam o mesmo ano, as mesmas empresas, e chegaram a campeãs
 
 O Meu Dividendo considera o que foi declarado dentro do ano. Por essa régua, a Petrobras lidera com R$ 60,79 bilhões, e o Itaú vem logo atrás, com R$ 55,15 bilhões.
 
-A Elos Ayta considera só o dinheiro que saiu do caixa dentro do ano-calendário. Por essa régua o Itaú passa na frente, com R$ 48,9 bilhões contra R$ 45,4 bilhões da Petrobras. É a primeira vez que o banco lidera desde 2019.
+A Elos Ayta considera só o dinheiro que saiu do caixa dentro do ano. Por essa régua o Itaú passa na frente: R$ 48,9 bilhões contra R$ 45,4 bilhões. É a primeira vez que o banco lidera desde 2019.
 
-A diferença tem uma explicação chata e simples: empresa declara dividendo num ano e paga no outro. Dependendo de onde você corta, o pódio muda.
+A explicação é chata e simples: empresa declara dividendo num ano e paga no outro. Dependendo de onde você corta, o pódio muda.
 
-O ranking completo do carrossel segue o levantamento do Meu Dividendo, que é o único que fecha o ano com as dez posições. Somando dividendos e JCP, as empresas da B3 distribuíram R$ 355,8 bilhões em 2025, o maior valor já registrado.
+O ranking do carrossel segue o Meu Dividendo, o único que fecha o ano com as dez posições. Somando dividendos e JCP, as empresas da B3 distribuíram R$ 355,8 bilhões em 2025, o maior valor já registrado. Muita empresa correu para aprovar distribuição antes da virada do ano: de 2026 em diante vale a Lei 15.270/2025, que retém 10% de imposto quando a mesma empresa te paga mais de R$ 50 mil num único mês. Para a maior parte de quem investe, esse teto está bem distante.
 
-Parte desse recorde tem data de validade. Muita empresa correu para aprovar distribuição antes da virada do ano, porque dividendo aprovado até 31/12/2025, sobre resultado até 2025, continua isento mesmo que só caia na conta em 2028. De 2026 em diante vale a Lei 15.270/2025: 10% de imposto retido na fonte quando a mesma empresa paga mais de R$ 50 mil num único mês para o mesmo CPF.
+Aí tem o outro ranking, o que quase todo mundo procura primeiro: o de dividend yield. A lista é quase toda outra. Das dez que mais pagaram em valor, só o Itaú e a Itaúsa reaparecem no top 10 de DY.
 
-Antes que você se assuste com o imposto: são R$ 50 mil por mês, vindos de uma empresa só. Para a maior parte de quem investe, esse teto está bem distante.
+E faz sentido. DY é o dividendo dividido pelo preço da ação. Quando a ação despenca, o DY sobe sozinho, sem a empresa ter pago um centavo a mais. Quando entra um pagamento extraordinário, de venda de ativo, o DY daquele ano dispara e não se repete.
 
-Aí tem o outro ranking, o que quase todo mundo procura primeiro: o de dividend yield. A lista é quase toda outra. Das dez que mais pagaram em valor, só o Itaú e a Itaúsa reaparecem no top 10 de DY. As outras oito não estão lá.
+Conferi três levantamentos de DY de 2025 e achei três listas diferentes, cada uma com uma data-base. Um indicador que muda tanto conforme quem calculou descreve o passado, não escolhe o futuro.
 
-E faz sentido que não estejam. DY é o dividendo dividido pelo preço da ação, e o preço está embaixo da fração. Quando a ação despenca, o DY sobe sozinho, sem a empresa ter pago um centavo a mais. Quando entra um pagamento extraordinário, desses de venda de ativo, o DY daquele ano dispara e não se repete no seguinte.
+Nada disso é recomendação de compra ou venda. Números conferidos em 12/07/2026. Fontes nos comentários.
 
-Dá pra ver isso nas próprias fontes. Conferi três levantamentos de DY de 2025 e achei três listas diferentes, cada uma com uma data-base. Só uma empresa aparece nas três. Um indicador que muda tanto conforme quem calculou serve pra descrever o passado, não pra escolher o futuro.
-
-Nada disso é recomendação de compra ou venda. É o retrato de quem distribuiu caixa em 2025, e retrato de 2025 não diz o que vem em 2026.
-
-Números conferidos em 12/07/2026. Fontes nos comentários.
-
-Quanto a Petrobras pagou não muda nada na sua conta. O número que interessa pra você é o seu. No Carteira Inteligente você importa o extrato da B3 e o radar de proventos monta esse número sozinho, mês a mês.
+Quanto a Petrobras pagou não muda nada na sua conta. O número que interessa é o seu. No Carteira Inteligente você importa o extrato da B3 e o radar de proventos monta esse número sozinho, mês a mês.
 
 Entrar com o Google, no link da bio. É de graça.
 
