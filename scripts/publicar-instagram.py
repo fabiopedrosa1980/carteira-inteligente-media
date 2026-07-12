@@ -27,7 +27,13 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-API = "https://graph.facebook.com/v21.0"
+# A Meta tem dois caminhos de publicação, em hosts diferentes, e o token diz qual:
+#   "IGAA..." -> Instagram API com Instagram Login -> graph.instagram.com
+#   "EAA..."  -> Instagram API com Facebook Login  -> graph.facebook.com
+# Usar um token no host do outro devolve "Cannot parse access token".
+FB_API = "https://graph.facebook.com/v21.0"
+IG_API = "https://graph.instagram.com/v21.0"
+API = FB_API
 
 
 def erro(msg):
@@ -118,6 +124,9 @@ def main():
     if not (ig_user and token and base_url):
         erro("faltam IG_USER_ID, IG_ACCESS_TOKEN ou BASE_URL no ambiente")
 
+    global API
+    API = IG_API if token.startswith("IG") else FB_API
+
     # A data do post aponta pra pasta de campanha correspondente.
     data = re.search(r"(\d{4}-\d{2}-\d{2})", Path(post).name).group(1)
     pasta = Path("campanhas") / data
@@ -127,6 +136,7 @@ def main():
     legenda = ler_legenda(post)
     slides = urls_dos_slides(base_url, pasta, prefixo)
 
+    print(f"host      {API}")
     print(f"post      {post}")
     print(f"status    {status}")
     print(f"slides    {len(slides)} (de {pasta})")

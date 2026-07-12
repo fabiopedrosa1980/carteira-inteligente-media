@@ -1,8 +1,9 @@
 ---
 canal: instagram
 formato: carrossel
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-13
+instagram_media_id: "17877393498505367"
 ---
 
 Comprar a ação não garante o dividendo. Quem garante é a data.
