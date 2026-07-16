@@ -99,6 +99,8 @@ O script decide o formato pelo nome dos arquivos, não por parâmetro: `<prefixo
 
 Reels é o único formato em que a Meta **baixa e recodifica** o arquivo, em vez de só referenciar. O container leva minutos para sair de `IN_PROGRESS`, e por isso o script espera até 5 minutos nesse caminho contra 90s nos outros. Se estourar o tempo, **não republique de cara**: o container pode terminar sozinho depois e você acaba com o Reels no ar duas vezes. Confira o feed antes.
 
+O `raw.githubusercontent.com` serve `.mp4` como `application/octet-stream`, não `video/mp4`, e ainda manda `X-Content-Type-Options: nosniff`. Parece que deveria quebrar, mas a Meta engole numa boa — o Reels de 15/07 foi publicado assim. Não vá procurar outro host por causa disso.
+
 ## A confirmar com o Fábio
 
 Estes pontos foram inferidos do site, não informados: o handle exato do LinkedIn, se há outros canais além de Instagram e LinkedIn, e se a convenção de pastas acima corresponde a algum fluxo já existente (ferramenta de agendamento, planilha editorial). Ajuste este arquivo assim que forem definidos.

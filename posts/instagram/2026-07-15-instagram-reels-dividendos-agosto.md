@@ -1,8 +1,9 @@
 ---
 canal: instagram
 formato: reels
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-15
+permalink: https://www.instagram.com/reel/Da33wOKABG_/
 ---
 
 Quatro empresas pagam dividendo em agosto. Só uma já tem data fechada.
