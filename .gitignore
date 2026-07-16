@@ -3,3 +3,7 @@
 # credenciais locais (nunca versionar)
 .env
 *.env
+
+# Remotion
+node_modules/
+reels/out/

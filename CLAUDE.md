@@ -63,6 +63,22 @@ As artes ficam em `campanhas/AAAA-MM-DD/`, uma pasta por dia de publicação, no
 
 Dê às imagens nomes descritivos e sem espaços (`radar-proventos-slide-1.png`, não `ChatGPT Image 11 de jul. de 2026, 22_21_39.png`). Nome de export de ferramenta não diz o que a arte é, e espaços quebram comandos de shell.
 
+### `reels/` — os vídeos
+
+Projeto **Remotion** (React) que gera os Reels. É a única parte do repositório que é código de verdade: tem `package.json`, `node_modules` e build. Uma composição por campanha, registrada em `reels/src/Root.tsx`, com o código em `reels/src/<slug>/`.
+
+```bash
+cd reels && npm i                      # primeira vez
+npx remotion studio                    # preview interativo
+npx remotion render src/index.ts <id> ../campanhas/AAAA-MM-DD/<nome>.mp4
+```
+
+O MP4 **não** fica aqui: sai para `campanhas/AAAA-MM-DD/`, junto das imagens daquele dia. `reels/` guarda a receita, `campanhas/` guarda o artefato.
+
+Separe conteúdo de layout num `data.ts`. Número de mercado envelhece, e num vídeo ele está queimado no frame — quando o dado muda, você quer trocar uma linha de dados e re-renderizar, não caçar string dentro de componente.
+
+Remotion é gratuito para times de até 3 pessoas. Acima disso a licença é paga (remotion.pro/license).
+
 ### `posts/` — os textos
 
 Um post por arquivo Markdown, nomeado `AAAA-MM-DD-canal-slug.md` (ex.: `2026-07-14-instagram-radar-proventos.md`), organizado em `posts/<canal>/`. A data casa com a pasta correspondente em `campanhas/`, ligando texto e arte.
@@ -79,7 +95,9 @@ Uma ressalva sobre o `BASE_URL` que vem de lá: ele aponta para a pasta de uma c
 
 A Graph API não faz upload de arquivo: ela busca cada imagem por URL pública. Então a arte precisa estar na `main` **antes** da publicação, servida pelo `raw.githubusercontent.com`. Push primeiro, publica depois.
 
-O script decide o formato pelo nome dos arquivos, não por parâmetro: `<prefixo>-slide-N.png` é carrossel, `<prefixo>.png` é imagem única. Sem `--publicar` ele apenas simula, e só publica o que estiver com `status: aprovado`.
+O script decide o formato pelo nome dos arquivos, não por parâmetro: `<prefixo>.mp4` é Reels, `<prefixo>-slide-N.png` é carrossel, `<prefixo>.png` é imagem única. O MP4 é checado primeiro — campanha com vídeo e imagem de mesmo prefixo publica o vídeo. Sem `--publicar` ele apenas simula, e só publica o que estiver com `status: aprovado`.
+
+Reels é o único formato em que a Meta **baixa e recodifica** o arquivo, em vez de só referenciar. O container leva minutos para sair de `IN_PROGRESS`, e por isso o script espera até 5 minutos nesse caminho contra 90s nos outros. Se estourar o tempo, **não republique de cara**: o container pode terminar sozinho depois e você acaba com o Reels no ar duas vezes. Confira o feed antes.
 
 ## A confirmar com o Fábio
 

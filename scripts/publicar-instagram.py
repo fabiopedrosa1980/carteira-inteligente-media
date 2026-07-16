@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 """
-Publica um carrossel ou uma imagem única no Instagram pela Graph API oficial.
+Publica um Reels, um carrossel ou uma imagem única no Instagram pela Graph API.
 
-A API não faz upload de arquivo: ela busca cada imagem por URL pública. Os PNGs
-precisam estar acessíveis na internet antes de rodar isto (ver BASE_URL abaixo).
+A API não faz upload de arquivo: ela busca a mídia por URL pública. O PNG ou o
+MP4 precisa estar acessível na internet antes de rodar isto (ver BASE_URL).
 
 Uso:
     export IG_USER_ID=...        # ID da conta Instagram Business/Creator
     export IG_ACCESS_TOKEN=...   # token com instagram_business_content_publish
-    export BASE_URL=https://...  # onde as imagens estão hospedadas
-    export PREFIXO_SLIDES=...    # prefixo do nome dos PNGs na pasta da campanha
+    export BASE_URL=https://...  # onde a mídia está hospedada
+    export PREFIXO_SLIDES=...    # prefixo do nome dos arquivos na pasta da campanha
 
     python3 scripts/publicar-instagram.py posts/instagram/2026-07-13-instagram-datas-com-da-semana.md
     python3 scripts/publicar-instagram.py <post.md> --publicar   # posta de verdade
 
 O formato sai do nome dos arquivos na pasta da campanha, não de um parâmetro:
+    <prefixo>.mp4                             -> reels
     <prefixo>-slide-1.png, -slide-2.png, ...  -> carrossel
     <prefixo>.png                             -> imagem única
 
-Os dois caminhos são diferentes na Graph API. O carrossel cria um container por
+Os três caminhos são diferentes na Graph API. O carrossel cria um container por
 slide com is_carousel_item, depois um container CAROUSEL que os amarra e carrega
-a legenda. A imagem única é um container só, já com a legenda dentro.
+a legenda. A imagem única é um container só, já com a legenda dentro. O Reels é
+um container media_type=REELS com video_url, e é o único em que a Meta baixa e
+recodifica o arquivo, o que leva minutos em vez de segundos.
 
-Sem --publicar ele só simula: valida as credenciais, confere se cada imagem
-responde 200 e mostra a legenda que iria ao ar. Nada é postado.
+Sem --publicar ele só simula: valida as credenciais, confere se a mídia responde
+200 e mostra a legenda que iria ao ar. Nada é postado.
 """
 
 import json
@@ -81,9 +84,19 @@ def ler_status(caminho_post):
     return m.group(1) if m else "desconhecido"
 
 
-def urls_das_imagens(base_url, pasta_campanha, prefixo):
-    """As imagens do post, na ordem. Uma só imagem é um post estático."""
+def midia_do_post(base_url, pasta_campanha, prefixo):
+    """
+    O que publicar, na ordem, e de que formato. Devolve (formato, [(nome, url)]).
+
+    O MP4 é checado primeiro: se a campanha tem vídeo e imagem com o mesmo
+    prefixo, o vídeo é o post e as imagens são material de apoio.
+    """
     pasta = Path(pasta_campanha)
+
+    video = pasta / f"{prefixo}.mp4"
+    if video.exists():
+        return "reels", [(video.name, f"{base_url.rstrip('/')}/{video.name}")]
+
     imagens = sorted(pasta.glob(f"{prefixo}-slide-*.png"),
                      key=lambda p: int(re.search(r"-slide-(\d+)", p.name).group(1)))
     if not imagens:
@@ -91,11 +104,14 @@ def urls_das_imagens(base_url, pasta_campanha, prefixo):
         if unica.exists():
             imagens = [unica]
     if not imagens:
-        erro(f"nenhuma imagem em {pasta_campanha} com prefixo '{prefixo}'. "
-             f"Esperava {prefixo}-slide-1.png (carrossel) ou {prefixo}.png (imagem única)")
+        erro(f"nenhuma mídia em {pasta_campanha} com prefixo '{prefixo}'. Esperava "
+             f"{prefixo}.mp4 (reels), {prefixo}-slide-1.png (carrossel) "
+             f"ou {prefixo}.png (imagem única)")
     if len(imagens) > 10:
         erro(f"o Instagram aceita no máximo 10 imagens por carrossel; achei {len(imagens)}")
-    return [(p.name, f"{base_url.rstrip('/')}/{p.name}") for p in imagens]
+
+    formato = "carrossel" if len(imagens) > 1 else "imagem única"
+    return formato, [(p.name, f"{base_url.rstrip('/')}/{p.name}") for p in imagens]
 
 
 def conferir_publica(url):
@@ -110,17 +126,26 @@ def conferir_publica(url):
         return False, str(e)
 
 
-def esperar_container(container_id, token):
-    """Um container só pode ser publicado quando termina de processar."""
-    for _ in range(30):
+def esperar_container(container_id, token, tentativas=30, intervalo=3):
+    """
+    Um container só pode ser publicado quando termina de processar.
+
+    Imagem fica pronta em segundos. Reels não: a Meta baixa o MP4 inteiro e
+    recodifica, o que passa de um minuto sem nada de errado acontecendo. Por
+    isso quem publica vídeo chama isto com uma janela bem maior.
+    """
+    for _ in range(tentativas):
         r = chamar("GET", container_id, {"fields": "status_code,status", "access_token": token})
         s = r.get("status_code")
         if s == "FINISHED":
             return
         if s in ("ERROR", "EXPIRED"):
             erro(f"container {container_id} falhou: {r.get('status', s)}")
-        time.sleep(3)
-    erro(f"container {container_id} não ficou pronto a tempo")
+        time.sleep(intervalo)
+    erro(f"container {container_id} não ficou pronto em {tentativas * intervalo}s. "
+         f"Se for Reels, o vídeo pode ser pesado demais ou a URL lenta demais "
+         f"para a Meta baixar; confira o container {container_id} antes de repostar, "
+         f"senão você corre o risco de publicar duas vezes.")
 
 
 def main():
@@ -149,30 +174,30 @@ def main():
 
     status = ler_status(post)
     legenda = ler_legenda(post)
-    imagens = urls_das_imagens(base_url, pasta, prefixo)
-    carrossel = len(imagens) > 1
+    formato, midia = midia_do_post(base_url, pasta, prefixo)
+    reels = formato == "reels"
 
     print(f"host      {API}")
     print(f"post      {post}")
     print(f"status    {status}")
-    print(f"formato   {'carrossel' if carrossel else 'imagem única'}")
-    print(f"imagens   {len(imagens)} (de {pasta})")
+    print(f"formato   {formato}")
+    print(f"mídia     {len(midia)} arquivo(s) (de {pasta})")
     print(f"legenda   {len(legenda)} caracteres")
     print()
 
     if len(legenda) > 2200:
         erro(f"a legenda tem {len(legenda)} caracteres; o Instagram corta em 2200")
 
-    # Toda imagem precisa estar de pé ANTES de falarmos com a Meta.
-    print("conferindo se cada imagem está acessível publicamente...")
+    # A mídia precisa estar de pé ANTES de falarmos com a Meta.
+    print("conferindo se a mídia está acessível publicamente...")
     problema = False
-    for nome, url in imagens:
+    for nome, url in midia:
         ok, code = conferir_publica(url)
         print(f"  {'ok ' if ok else 'FALHA'} {code:>5}  {nome}")
         problema |= not ok
     if problema:
-        erro("alguma imagem não está pública. A Meta busca a imagem pela URL; "
-             "se ela não responde 200, a publicação falha.")
+        erro("a mídia não está pública. A Meta busca o arquivo pela URL; "
+             "se ele não responde 200, a publicação falha.")
 
     if not publicar:
         print("\n--- legenda que iria ao ar ---")
@@ -184,10 +209,26 @@ def main():
     if status != "aprovado":
         erro(f"o post está como '{status}'. Só publico o que está 'aprovado'.")
 
-    if carrossel:
+    espera = {"tentativas": 30, "intervalo": 3}
+
+    if reels:
+        # Reels: um container só, com a legenda dentro. A Meta baixa o MP4 da
+        # URL e recodifica, então este é o único formato em que o container
+        # demora minutos para ficar FINISHED.
+        nome, url = midia[0]
+        print("\ncriando o container do reels...")
+        pai = chamar("POST", f"{ig_user}/media", {
+            "media_type": "REELS",
+            "video_url": url,
+            "caption": legenda,
+            "access_token": token,
+        })["id"]
+        print(f"  {nome} -> {pai}")
+        espera = {"tentativas": 60, "intervalo": 5}
+    elif formato == "carrossel":
         print("\ncriando os containers de cada slide...")
         filhos = []
-        for nome, url in imagens:
+        for nome, url in midia:
             r = chamar("POST", f"{ig_user}/media", {
                 "image_url": url,
                 "is_carousel_item": "true",
@@ -209,7 +250,7 @@ def main():
         })["id"]
     else:
         # Imagem única: um container só, e a legenda vai nele mesmo.
-        nome, url = imagens[0]
+        nome, url = midia[0]
         print("\ncriando o container da imagem...")
         pai = chamar("POST", f"{ig_user}/media", {
             "image_url": url,
@@ -219,7 +260,9 @@ def main():
         print(f"  {nome} -> {pai}")
 
     print("esperando o processamento...")
-    esperar_container(pai, token)
+    if reels:
+        print("  (reels demora: a Meta baixa e recodifica o vídeo)")
+    esperar_container(pai, token, **espera)
 
     print("publicando...")
     r = chamar("POST", f"{ig_user}/media_publish", {
