@@ -1,8 +1,9 @@
 ---
 canal: instagram
 formato: reels
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-17
+permalink: https://www.instagram.com/reel/Da3-KHqCcMU/
 ---
 
 6 ativos na carteira. Nenhum digitado à mão.
