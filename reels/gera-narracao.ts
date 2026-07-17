@@ -2,21 +2,36 @@
  * Gera a narração do Reels com a voz nativa do macOS e imprime a duração de
  * cada cena, que é o que define o tempo de tela em Reels.tsx.
  *
- *   cd reels && node gera-narracao.ts
+ *   cd reels && node gera-narracao.ts <slug>
+ *
+ * Ex.: `node gera-narracao.ts tour-app` lê src/tour-app/narracao.ts e escreve
+ * public/narracao/tour-app/<cena>.wav.
+ *
+ * A narração é por campanha, e a pasta também: os ids de cena se repetem entre
+ * campanhas ("gancho", "cta"), e num diretório plano a campanha nova
+ * sobrescreveria o áudio da anterior — que já está publicada.
+ *
+ * Sem slug, mantém o caminho antigo (narracao.ts na raiz → public/narracao/),
+ * que é de onde o Reels de dividendos de agosto ainda lê.
  *
  * WAV e não AIFF de propósito: o ffmpeg que vem no Remotion é compilado sem o
  * demuxer de aiff, que é o formato padrão do `say`. Ele lê wav sem reclamar.
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
-import { narracao, VOZ, PALAVRAS_POR_MINUTO } from "./narracao.ts";
 
-mkdirSync("public/narracao", { recursive: true });
+const slug = process.argv[2];
+const { narracao, VOZ, PALAVRAS_POR_MINUTO } = await import(
+  slug ? `./src/${slug}/narracao.ts` : "./narracao.ts"
+);
+
+const destino = slug ? `public/narracao/${slug}` : "public/narracao";
+mkdirSync(destino, { recursive: true });
 
 const duracoes: Record<string, number> = {};
 
 for (const { id, texto } of narracao) {
-  const wav = `public/narracao/${id}.wav`;
+  const wav = `${destino}/${id}.wav`;
 
   execFileSync("say", [
     "-v", VOZ,

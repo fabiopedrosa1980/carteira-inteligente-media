@@ -5,6 +5,10 @@ import {
   FPS,
   ReelsDividendosAgosto,
 } from "./dividendos-agosto/Reels";
+import {
+  calculateMetadata as calculateMetadataTourApp,
+  ReelsTourApp,
+} from "./tour-app/Reels";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -18,6 +22,16 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         calculateMetadata={calculateMetadata}
+        defaultProps={{ duracoes: [] }}
+        durationInFrames={1}
+      />
+      <Composition
+        id="tour-app"
+        component={ReelsTourApp}
+        fps={FPS}
+        width={1080}
+        height={1920}
+        calculateMetadata={calculateMetadataTourApp}
         defaultProps={{ duracoes: [] }}
         durationInFrames={1}
       />
