@@ -35,7 +35,11 @@ Instagram e LinkedIn pedem registros diferentes: no Instagram o texto é curto, 
 
 ## Identidade visual
 
-A paleta, a tipografia e as regras de aplicação em arte estão no `BRAND.md`, extraídas do código do site (`../carteira-inteligente`, `src/styles.scss`) — não são escolhas deste repositório. Leia antes de escrever qualquer briefing de arte: o tema escuro é o padrão da marca, o fundo é `#0d1117` (não preto puro), o logo é dourado e não verde, e o verde de acento não é cor de botão.
+A paleta, a tipografia e as regras de aplicação em arte estão no `BRAND.md`, extraídas do código do site (`../carteira-inteligente`, `src/styles.scss`) — não são escolhas deste repositório. Leia antes de escrever qualquer briefing de arte: o logo é dourado e não verde, e o verde de acento não é cor de botão.
+
+**Toda arte usa o tema claro.** Fundo `#f6f8fa`, card `#ffffff`, borda `#d0d7de`, texto `#1f2328`, secundário `#656d76`, positivo/acento `#1a7f4b`, negativo `#cf222e`, atenção `#b45c0a`. Isto vale para carrossel, imagem única e Reels, e independe de o site tratar o escuro como padrão: nas peças de mídia a decisão é do Fábio, tomada em 18/07/2026. Nenhuma das duas pontas é pura — o fundo é `#f6f8fa`, não `#ffffff`, senão o card branco some.
+
+O dourado tem duas versões no claro, e trocar uma pela outra quebra a legibilidade. `#C9A84C` é a cor do símbolo do logo e serve como grafismo, mas dá só 2,15:1 sobre o fundo claro: reprova até como texto grande, que exige 3:1. Quando o dourado for texto ou régua, use `#8a6b1f` (4,69:1) ou `#a8842f` (3,28:1, só para elemento grande). E não use dourado no número principal de uma arte clara — o contraste vem do corpo do texto, então `#1f2328` (14,8:1) é a escolha certa para o dado que precisa ser lido primeiro.
 
 ## Tom de voz
 
