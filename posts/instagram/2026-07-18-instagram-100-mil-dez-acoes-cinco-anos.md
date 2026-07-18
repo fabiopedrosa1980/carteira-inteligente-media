@@ -1,7 +1,7 @@
 ---
 canal: instagram
 formato: estático
-status: aprovado
+status: publicado
 data_publicacao: 2026-07-18
 ---
 
